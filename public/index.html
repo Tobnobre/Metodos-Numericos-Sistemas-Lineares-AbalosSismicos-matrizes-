@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise Sísmica (Fatoração e Inversa)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Análise Sísmica</h1>
+            <p>Resolução de Sistemas Lineares e Cálculo de Inversa</p>
+        </header>
+
+        <main>
+            <div class="input-group">
+                <label>Dimensão (n):</label>
+                <input type="number" id="dimensao" value="3">
+            </div>
+
+            <div class="input-group">
+                <label>Precisão (Erro Máx):</label>
+                <input type="number" id="precisao" value="0.0001" step="0.00001">
+            </div>
+
+            <div class="matrix-inputs">
+                <div class="box">
+                    <label>Matriz A (Termos separados por espaço)</label>
+                    <textarea id="matrizA" rows="5">5 3 1
+5 6 1
+1 6 7</textarea>
+                    <small>Ex: Para 3x3, digite 9 números em sequência.</small>
+                </div>
+                
+                <div class="box">
+                    <label>Vetor b (Termos independentes)</label>
+                    <textarea id="vetorB" rows="5">1 2 3</textarea>
+                    <small>Ex: Para n=3, digite 3 números.</small>
+                </div>
+            </div>
+
+            <div class="controls">
+                <label>Método:</label>
+                <select id="metodo">
+                    <option value="1">Gauss-Seidel (Recomendado)</option>
+                    <option value="0">Gauss-Jacobi</option>
+                </select>
+                <button onclick="calcular()">CALCULAR ESTRUTURA</button>
+            </div>
+
+            <div id="resultado" class="hidden">
+                <h2>Resultados da Análise</h2>
+                <div id="output-content"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="trabalho2.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

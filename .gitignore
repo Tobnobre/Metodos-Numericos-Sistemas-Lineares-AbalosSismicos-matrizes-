@@ -1,0 +1,10 @@
+# Ignorar configurações do editor
+.vscode/
+
+# Ignorar a pasta do SDK (caso você tenha copiado ela sem querer)
+emsdk/
+
+# Opcional: Ignorar os arquivos compilados (binários)
+# Se você quiser que tenham que compilar, descomente as linhas abaixo:
+# public/trabalho2.js
+# public/trabalho2.wasm
