@@ -9,8 +9,8 @@ Module.onRuntimeInitialized = function() {
     // Habilita o botão visualmente
     const btn = document.querySelector('button');
     if(btn) {
-        btn.innerText = "CALCULAR ESTRUTURA (PRONTO)";
-        btn.style.backgroundColor = "#a6e3a1"; // Verde
+        btn.innerHTML = "<i class='fas fa-check-circle'></i> CALCULAR ESTRUTURA (PRONTO)";
+        btn.style.background = "linear-gradient(135deg, #a6e3a1, #89b4fa)";
     }
 };
 
@@ -48,6 +48,8 @@ function calcular() {
         }
 
         // --- ETAPA 2: ALOCAÇÃO DE MEMÓRIA (C++) ---
+        console.log("Dados capturados com sucesso! Iniciando alocação de memória...");
+
         // Double usa 8 bytes. Multiplicamos o tamanho por 8.
         ptrA = Module._malloc(arrayA.length * 8);
         ptrB = Module._malloc(arrayB.length * 8);
