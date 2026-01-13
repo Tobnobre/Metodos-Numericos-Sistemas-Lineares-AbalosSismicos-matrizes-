@@ -24,6 +24,11 @@
                 <input type="number" id="precisao" value="0.0001" step="0.00001">
             </div>
 
+            <div class="input-group">
+                <label>Limiar de Criticidade (cm):</label>
+                <input type="number" id="limiar" value="0.4" step="0.1">
+            </div>
+
             <div class="matrix-inputs">
                 <div class="box">
                     <label>Matriz A (Termos separados por espaço)</label>
@@ -35,7 +40,9 @@
                 
                 <div class="box">
                     <label>Vetor b (Termos independentes)</label>
-                    <textarea id="vetorB" rows="5">1 2 3</textarea>
+                    <textarea id="vetorB" rows="5">1 
+2 
+3</textarea>
                     <small>Ex: Para n=3, digite 3 números.</small>
                 </div>
             </div>
@@ -43,10 +50,10 @@
             <div class="controls">
                 <label>Método:</label>
                 <select id="metodo">
-                    <option value="1">Gauss-Seidel (Recomendado)</option>
+                    <option value="1">Gauss-Seidel</option>
                     <option value="0">Gauss-Jacobi</option>
                 </select>
-                <button onclick="calcular()">CALCULAR ESTRUTURA</button>
+                <button onclick="calcular()">Calcular</button>
             </div>
 
             <div id="resultado" class="hidden">

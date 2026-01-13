@@ -48,8 +48,9 @@ button {
     cursor: pointer;
     font-size: 1.1em;
     transition: transform 0.1s;
+    margin-top: 25px;
 }
-button:hover { transform: scale(1.02); background-color: #94e28e; }
+button:hover { background-color: #94e28e; }
 
 .hidden { display: none; }
 #resultado {

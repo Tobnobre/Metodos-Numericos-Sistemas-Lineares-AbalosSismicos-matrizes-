@@ -8,3 +8,5 @@ emsdk/
 # Se você quiser que tenham que compilar, descomente as linhas abaixo:
 # public/trabalho2.js
 # public/trabalho2.wasm
+
+*.bat
