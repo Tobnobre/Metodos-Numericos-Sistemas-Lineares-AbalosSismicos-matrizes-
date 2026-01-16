@@ -5,13 +5,6 @@ var wasmPronto = false;
 Module.onRuntimeInitialized = function() {
     wasmPronto = true;
     console.log("✅ WebAssembly Carregado e Pronto!");
-    
-    // Habilita o botão visualmente
-    const btn = document.querySelector('button');
-    if(btn) {
-        btn.innerHTML = "<i class='fas fa-check-circle'></i> CALCULAR ESTRUTURA (PRONTO)";
-        btn.style.background = "linear-gradient(135deg, #a6e3a1, #89b4fa)";
-    }
 };
 
 function calcular() {
@@ -88,7 +81,7 @@ function exibirResultados(res) {
     // Ajuste seguro caso a classe css mude
     divRes.className = res.perigo ? 'danger' : 'safe'; 
 
-    let html = `<h3>Status: ${res.perigo ? "🚨 PERIGO DETECTADO" : "✅ ESTRUTURA SEGURA"}</h3>`;
+    let html = `<h3>Status: ${res.perigo ? "PERIGO DETECTADO" : "ESTRUTURA SEGURA"}</h3>`;
     html += `<p><strong>Método Usado:</strong> ${res.metodo} (${res.iteracoes} iterações totais)</p>`;
 
     // Formatar Matriz Inversa

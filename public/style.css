@@ -64,8 +64,8 @@ input:focus, select:focus, textarea:focus {
 button {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(135deg, #89b4fa, #6c9bd1);
-    color: #1e1e2e;
+    background: linear-gradient(305deg, #89b4fa, #8695cf);
+        color: #222b3a;
     font-weight: bold;
     border: none;
     border-radius: 8px;
@@ -76,7 +76,7 @@ button {
 }
 
 button:hover {
-    background: linear-gradient(135deg, #6c9bd1, #89b4fa);
+    background: linear-gradient(135deg, #7bb0e7, #89b4fa);
     box-shadow: 0 0 20px rgba(137, 180, 250, 0.8);
 }
 
