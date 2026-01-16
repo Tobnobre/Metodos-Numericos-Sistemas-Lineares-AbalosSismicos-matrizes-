@@ -4,11 +4,10 @@
 
 using namespace std;
 
-// Cálculo por Jacobi
 pair<vector<double>, int> JacobiSolver::resolver(int n, const vector<vector<double>>& A, const vector<double>& b, double erro_max) {
     vector<double> x(n);
     
-    // Chute inicial
+    // Chute inicial seguro
     for (int i = 0; i < n; i++) {
         if (abs(A[i][i]) > 1e-12) x[i] = b[i] / A[i][i];
         else x[i] = 0.0;
@@ -17,15 +16,23 @@ pair<vector<double>, int> JacobiSolver::resolver(int n, const vector<vector<doub
     vector<double> x_novo = x;
     double erro = 10.0;
     int iter = 0;
+    int max_iter = 1000;
     
-    // Loop principal
-    while (erro > erro_max && iter < 1000) {
+    while (erro > erro_max) {
+        // CORREÇÃO AQUI: Retorna -2 para Limite ou Divergência
+        if (iter >= max_iter || erro > 1e15 || std::isnan(erro) || std::isinf(erro)) {
+            return {x, -2}; 
+        }
+
         for (int i = 0; i < n; i++) {
             double soma = 0;
             for (int j = 0; j < n; j++) {
                 if (i != j) soma += A[i][j] * x[j];
             }
-            if (abs(A[i][i]) < 1e-12) return {x, -1}; // Erro caso pivô zero
+            
+            // CORREÇÃO AQUI: Retorna -1 apenas se o pivô for zero
+            if (abs(A[i][i]) < 1e-12) return {x, -1}; 
+            
             x_novo[i] = (b[i] - soma) / A[i][i];
         }
         
@@ -35,6 +42,7 @@ pair<vector<double>, int> JacobiSolver::resolver(int n, const vector<vector<doub
             x[i] = x_novo[i];
         }
         erro = max_diff;
+    
         iter++;
     }
     return {x, iter};

@@ -10,8 +10,9 @@ struct ResultadoSismico {
     bool perigo;                              
     std::string metodo;                       
     int iteracoes_totais;                     
-    bool erro_matematico;      // True se houver divisão por zero
-    bool diagonal_dominante;   // True se a matriz garante convergência
+    bool erro_matematico;      
+    bool diagonal_dominante;
+    std::string mensagem_erro; // <--- NOVO CAMPO
 };
 
 #endif

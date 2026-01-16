@@ -13,8 +13,16 @@ ResultadoSismico SismicSystem::analisar(int n, const vector<vector<double>>& A, 
     res.iteracoes_totais = 0;
     res.erro_matematico = false;
     
-    // Critério de convergência
-    res.diagonal_dominante = Utils::verificarDiagonalDominante(n, A);
+    // --- ALTERAÇÃO AQUI ---
+    // Seleciona o critério adequado para o método escolhido
+    if (usarSeidel) {
+        // Se for Seidel, usa Sassenfeld (que é mais forte e específico para Seidel)
+        res.diagonal_dominante = Utils::verificarSassenfeld(n, A);
+    } else {
+        // Se for Jacobi, usa o Critério das Linhas (Diagonal Dominante)
+        res.diagonal_dominante = Utils::verificarDiagonalDominante(n, A);
+    }
+    // ----------------------
 
     // Loop para encontrar a inversa (coluna por coluna)
     for (int j = 0; j < n; j++) {
@@ -23,14 +31,20 @@ ResultadoSismico SismicSystem::analisar(int n, const vector<vector<double>>& A, 
         
         pair<vector<double>, int> resultado_coluna;
         
-        // Seleciona o método correto
         if (usarSeidel) 
             resultado_coluna = SeidelSolver::resolver(n, A, identidade_col, erro_max);
         else 
             resultado_coluna = JacobiSolver::resolver(n, A, identidade_col, erro_max);
         
-        if (resultado_coluna.second == -1) {
+        if (resultado_coluna.second < 0) {
             res.erro_matematico = true;
+            
+            if (resultado_coluna.second == -1) {
+                res.mensagem_erro = "Erro Matemático: Pivô nulo (divisão por zero) detectado na coluna " + to_string(j+1);
+            } else {
+                res.mensagem_erro = "Falha de Convergência: O método atingiu o limite de iterações ou divergiu (números muito grandes).";
+            }
+            
             return res;
         }
 

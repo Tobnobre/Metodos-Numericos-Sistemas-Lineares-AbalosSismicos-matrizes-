@@ -76,7 +76,7 @@ function exibirResultados(res, limiar) {
     // Verifica erro crítico do C++
     if (!res.sucesso) {
         divRes.className = 'danger';
-        divContent.innerHTML = `<h3>Erro Matemático</h3><p>${res.erro_critico}</p>`;
+        divContent.innerHTML = `<h3>Erro Matemático</h3><p >${res.erro_critico}</p>`;
         return;
     }
 
@@ -88,8 +88,8 @@ function exibirResultados(res, limiar) {
     // Aviso de Convergência (Teoria)
     if (!res.diagonal_dominante) {
         html += `<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                    <strong>Aviso :</strong> A matriz não é estritamente diagonal dominante. 
-                    Convergência não é garantida para métodos iterativos.
+                    <strong>Aviso :</strong> O critério de convergência (Diagonal/Sassenfeld) não foi satisfeito. 
+                    A convergência não é garantida para métodos iterativos, mas o cálculo será tentado.
                  </div>`;
     }
 

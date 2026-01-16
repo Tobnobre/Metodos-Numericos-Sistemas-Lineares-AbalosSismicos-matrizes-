@@ -31,7 +31,7 @@ char* calcularSistemaSismico(int n, double* flatA, double* flatB, double precisa
     ss << "{";
     
     if (res.erro_matematico) {
-        ss << "\"erro_critico\": \"Divisão por zero detectada, alterar matriz sem o pivô zero.\",";
+        ss << "\"erro_critico\": \"" << res.mensagem_erro << "\",";
         ss << "\"sucesso\": false"; 
     } else {
         ss << "\"sucesso\": true,";
