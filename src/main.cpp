@@ -3,7 +3,7 @@
 #include <string>
 #include <sstream>
 #include <cstring>
-#include "sismic.h" // Inclui apenas o controlador principal
+#include "sismic.h"
 
 using namespace std;
 
@@ -24,7 +24,6 @@ char* calcularSistemaSismico(int n, double* flatA, double* flatB, double precisa
 
     bool usarSeidel = (metodoId == 1);
     
-    // Chamada simplificada
     ResultadoSismico res = SismicSystem::analisar(n, A, b, precisao, usarSeidel, limiar);
 
     stringstream ss;
@@ -56,7 +55,10 @@ char* calcularSistemaSismico(int n, double* flatA, double* flatB, double precisa
 
         ss << "\"perigo\": " << (res.perigo ? "true" : "false") << ",";
         ss << "\"metodo\": \"" << res.metodo << "\",";
+        
         ss << "\"iteracoes\": " << res.iteracoes_totais << ",";
+        ss << "\"erro_final\": " << res.erro_final << ","; 
+
         ss << "\"diagonal_dominante\": " << (res.diagonal_dominante ? "true" : "false");
     }
     

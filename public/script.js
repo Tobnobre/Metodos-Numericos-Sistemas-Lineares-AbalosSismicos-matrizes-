@@ -18,10 +18,9 @@ function calcular() {
 
     let ptrA = null;
     let ptrB = null;
-    let ptrResultado = null; // Ponteiro para a string de resposta
+    let ptrResultado = null;
 
     try {
-        // --- ETAPA 1: CAPTURA DE DADOS ---
         const n = parseInt(document.getElementById('dimensao').value);
         const erro = parseFloat(document.getElementById('precisao').value);
         const limiar = parseFloat(document.getElementById('limiar').value);
@@ -73,46 +72,61 @@ function exibirResultados(res, limiar) {
     const divContent = document.getElementById('output-content');
     divRes.classList.remove('hidden');
 
-    // Verifica erro crítico do C++
     if (!res.sucesso) {
         divRes.className = 'danger';
-        divContent.innerHTML = `<h3>Erro Matemático</h3><p >${res.erro_critico}</p>`;
+        divContent.innerHTML = `<h3>Erro Matemático</h3><p>${res.erro_critico}</p>`;
         return;
     }
 
-    // Configura cores baseado no perigo
     divRes.className = res.perigo ? 'danger' : 'safe'; 
 
     let html = `<h3>Status: ${res.perigo ? "🚨 Estrutura em perigo" : "✅ Estrutura segura"}</h3>`;
     
-    // Aviso de Convergência (Teoria)
     if (!res.diagonal_dominante) {
         html += `<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
                     <strong>Aviso :</strong> O critério de convergência (Diagonal/Sassenfeld) não foi satisfeito. 
-                    A convergência não é garantida para métodos iterativos, mas o cálculo será tentado.
+                    A convergência não é garantida para métodos iterativos, mas o cálculo será tentado. 
                  </div>`;
     }
 
     html += `<p><strong>Método:</strong> ${res.metodo} | <strong>Iterações Totais:</strong> ${res.iteracoes}</p>`;
 
     html += `<h4>Matriz Inversa (A⁻¹)</h4><pre>`;
-    res.inversa.forEach(linha => {
-        html += linha.map(v => v.toFixed(6).padStart(10)).join("  ") + "\n";
-    });
+    if(res.inversa) {
+        res.inversa.forEach(linha => {
+            html += linha.map(v => v.toFixed(6).padStart(10)).join("  ") + "\n";
+        });
+    }
     html += `</pre>`;
 
     html += `<h4>Deslocamentos (d)</h4><ul>`;
     res.d.forEach((val, i) => {
-        // Agora compara com a variável 'limiar' e não mais 0.4 fixo
         const critico = Math.abs(val) > limiar;
-        const style = critico ? "color: red; font-weight:bold;" : "";
+        const style = critico ? "color: #f38ba8; font-weight:bold;" : ""; 
         
         html += `<li style="${style}">
                     d${i+1} = ${val.toFixed(6)} cm 
                     ${critico ? "(CRÍTICO)" : ""}
                  </li>`;
     });
-    html += `</ul>`;
+    html += `</ul>`;    
+
+    let erroVisual = "N/A";
+    
+    if (res.erro_final) {
+        const strCientifica = res.erro_final.toExponential(4);
+        
+        const partes = strCientifica.split('e');
+        
+        erroVisual = `${partes[0]} × 10<sup>${partes[1]}</sup>`;
+    }
+    
+    html += `<h4>Erro Relativo Final</h4>`;
+    html += `<div style="background: #11111b; padding: 10px; border-radius: 6px; border-left: 4px solid #fab387;">
+                <span>
+                    ${erroVisual}
+                </span>
+             </div>`;
 
     divContent.innerHTML = html;
 }
