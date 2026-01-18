@@ -4,30 +4,27 @@ Module.onRuntimeInitialized = function() {
     wasmPronto = true;
     console.log("WebAssembly Carregado e Pronto");
     const btn = document.querySelector('button');
-    if(btn) {
-        btn.innerText = "Calcular";
-        btn.style.backgroundColor = "#a6e3a1"; 
-    }
+    if(btn) btn.innerText = "Calcular Comparativo";
 };
 
 function calcular() {
-    if (!wasmPronto) {
-        alert("Aguarde o carregamento do módulo C++.");
-        return;
-    }
+    if (!wasmPronto) return alert("Aguarde o carregamento do módulo C++.");
 
     let ptrA = null;
     let ptrB = null;
-    let ptrResultado = null;
+    let ptrResJacobi = null;
+    let ptrResSeidel = null;
 
     try {
         const n = parseInt(document.getElementById('dimensao').value);
-        const erro = parseFloat(document.getElementById('precisao').value);
-        const limiar = parseFloat(document.getElementById('limiar').value);
-        const metodo = parseInt(document.getElementById('metodo').value);
-        const strA = document.getElementById('matrizA').value;
+        
+        const erro = parseFloat(document.getElementById('precisao').value.replace(',', '.'));
+        const limiar = parseFloat(document.getElementById('limiar').value.replace(',', '.'));
+        
+        const strA = document.getElementById('matrizA').value.replace(/,/g, '.');
         const arrayA = strA.trim().split(/\s+/).map(Number);
-        const strB = document.getElementById('vetorB').value;
+        
+        const strB = document.getElementById('vetorB').value.replace(/,/g, '.');
         const arrayB = strB.trim().split(/\s+/).map(Number);
 
         if (arrayA.length !== n * n || arrayB.length !== n) {
@@ -44,14 +41,16 @@ function calcular() {
         const calcularFunc = Module.cwrap('calcularSistemaSismico', 'number', 
             ['number', 'number', 'number', 'number', 'number', 'number']
         );
-
-        ptrResultado = calcularFunc(n, ptrA, ptrB, erro, metodo, limiar);
-
-        const jsonString = Module.UTF8ToString(ptrResultado);
-
-        const resultado = JSON.parse(jsonString);
         
-        exibirResultados(resultado, limiar);
+        ptrResJacobi = calcularFunc(n, ptrA, ptrB, erro, 0, limiar);
+        const jsonJacobi = Module.UTF8ToString(ptrResJacobi);
+        gerarHtmlResultado(JSON.parse(jsonJacobi), limiar, 'res-jacobi');
+
+        ptrResSeidel = calcularFunc(n, ptrA, ptrB, erro, 1, limiar);
+        const jsonSeidel = Module.UTF8ToString(ptrResSeidel);
+        gerarHtmlResultado(JSON.parse(jsonSeidel), limiar, 'res-seidel');
+
+        document.getElementById('painel-resultados').classList.remove('hidden');
 
     } catch (e) {
         console.error("Erro:", e);
@@ -60,73 +59,64 @@ function calcular() {
         if (ptrA !== null) Module._free(ptrA);
         if (ptrB !== null) Module._free(ptrB);
         
-        if (ptrResultado !== null) {
-            const liberarFunc = Module.cwrap('liberarMemoria', null, ['number']);
-            liberarFunc(ptrResultado);
-        }
+        const liberarFunc = Module.cwrap('liberarMemoria', null, ['number']);
+        if (ptrResJacobi !== null) liberarFunc(ptrResJacobi);
+        if (ptrResSeidel !== null) liberarFunc(ptrResSeidel);
     }
 }
 
-function exibirResultados(res, limiar) {
-    const divRes = document.getElementById('resultado');
-    const divContent = document.getElementById('output-content');
-    divRes.classList.remove('hidden');
-
+function gerarHtmlResultado(res, limiar, elementId) {
+    const divTarget = document.getElementById(elementId);
+    
     if (!res.sucesso) {
-        divRes.className = 'danger';
-        divContent.innerHTML = `<h3>Erro Matemático</h3><p>${res.erro_critico}</p>`;
+        divTarget.className = 'result-box danger';
+        divTarget.innerHTML = `<h3 style="color:#f38ba8">Erro</h3><p>${res.erro_critico}</p>`;
         return;
     }
 
-    divRes.className = res.perigo ? 'danger' : 'safe'; 
+    divTarget.className = res.perigo ? 'result-box danger' : 'result-box safe'; 
 
-    let html = `<h3>Status: ${res.perigo ? "🚨 Estrutura em perigo" : "✅ Estrutura segura"}</h3>`;
+    let html = `<h4>Status: ${res.perigo ? "🚨 Perigo" : "✅ Seguro"}</h4>`;
     
     if (!res.diagonal_dominante) {
-        html += `<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-                    <strong>Aviso :</strong> O critério de convergência (Diagonal/Sassenfeld) não foi satisfeito. 
-                    A convergência não é garantida para métodos iterativos, mas o cálculo será tentado. 
+        const nomeCriterio = res.metodo.includes("Jacobi") ? "Critério de linhas" : "Sassenfeld";
+
+        html += `<div style="font-size: 0.9em; background: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; margin-bottom: 10px;">
+                    Aviso: O critério de convergência (<strong>${nomeCriterio}</strong>) não foi satisfeito. 
+                    <br><span style="font-size: 0.9em; opacity: 0.9">A convergência não é garantida, mas o cálculo foi tentado.</span>
                  </div>`;
     }
+    html += `<p><strong>Iterações:</strong> ${res.iteracoes}</p>`;
 
-    html += `<p><strong>Método:</strong> ${res.metodo} | <strong>Iterações Totais:</strong> ${res.iteracoes}</p>`;
-
-    html += `<h4>Matriz Inversa (A⁻¹)</h4><pre>`;
+    html += `<h5>Matriz Inversa (A⁻¹)</h5><pre style="font-size: 0.75em;">`;
     if(res.inversa) {
         res.inversa.forEach(linha => {
-            html += linha.map(v => v.toFixed(6).padStart(10)).join("  ") + "\n";
+            html += linha.map(v => v.toFixed(6).padStart(8)).join(" ") + "\n";
         });
     }
     html += `</pre>`;
 
-    html += `<h4>Deslocamentos (d)</h4><ul>`;
+    html += `<h5>Deslocamentos (d)</h5><ul style="margin: 0; padding-left: 15px;">`;
     res.d.forEach((val, i) => {
         const critico = Math.abs(val) > limiar;
         const style = critico ? "color: #f38ba8; font-weight:bold;" : ""; 
-        
-        html += `<li style="${style}">
-                    d${i+1} = ${val.toFixed(6)} cm 
-                    ${critico ? "(CRÍTICO)" : ""}
-                 </li>`;
+        html += `<li style="${style}">d${i+1} = ${val.toFixed(6)} cm</li>`;
     });
     html += `</ul>`;    
 
     let erroVisual = "N/A";
-    
     if (res.erro_final) {
         const strCientifica = res.erro_final.toExponential(4);
-        
         const partes = strCientifica.split('e');
-        
         erroVisual = `${partes[0]} × 10<sup>${partes[1]}</sup>`;
     }
     
-    html += `<h4>Erro Relativo Final</h4>`;
-    html += `<div style="background: #11111b; padding: 10px; border-radius: 6px; border-left: 4px solid #fab387;">
-                <span>
+    html += `<div style="margin-top:15px; padding-top:10px; border-top: 1px solid #45475a;">
+                <p style="text-align: left; font-weight:700; font-size:14px; color:#cdd6f4;">Erro Relativo Final:</p>
+                <span style="color: #fab387;">
                     ${erroVisual}
                 </span>
              </div>`;
 
-    divContent.innerHTML = html;
+    divTarget.innerHTML = html;
 }

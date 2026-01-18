@@ -53,6 +53,6 @@ pair<vector<double>, int> SeidelSolver::resolver(int n, const vector<vector<doub
         iter++;
     }
     
-    erro_final = erro; // Salva o erro final alcançado
+    erro_final = erro;
     return {x, iter};
 }

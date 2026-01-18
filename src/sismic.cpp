@@ -38,7 +38,7 @@ ResultadoSismico SismicSystem::analisar(int n, const vector<vector<double>>& A, 
             res.erro_final = erro_desta_coluna;
             
             if (resultado_coluna.second == -1) {
-                res.mensagem_erro = "Erro Matemático: Pivô nulo (divisão por zero) detectado na coluna " + to_string(j+1);
+                res.mensagem_erro = "Erro Matemático: Pivô nulo (divisão por zero) detectado";
             } else {
                 res.mensagem_erro = "Falha de Convergência: O método atingiu o limite de iterações ou divergiu.";
             }

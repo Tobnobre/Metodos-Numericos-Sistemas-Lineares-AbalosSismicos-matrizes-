@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análise Sísmica (Fatoração e Inversa)</title>
+    <title>Análise Sísmica Comparativa</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>Sistema de Análise Sísmica</h1>
-            <p>Resolução de Sistemas Lineares e Cálculo de Inversa</p>
+            <p>Comparativo: Gauss-Jacobi vs Gauss-Seidel</p>
         </header>
 
         <main>
@@ -48,17 +48,23 @@
             </div>
 
             <div class="controls">
-                <label>Método:</label>
-                <select id="metodo">
-                    <option value="1">Gauss-Seidel</option>
-                    <option value="0">Gauss-Jacobi</option>
-                </select>
-                <button onclick="calcular()">Calcular</button>
+                <button onclick="calcular()">Calcular Comparativo</button>
             </div>
 
-            <div id="resultado" class="hidden">
-                <h2>Resultados da Análise</h2>
-                <div id="output-content"></div>
+            <div id="painel-resultados" class="hidden">
+                <div class="results-grid">
+                    <div class="result-column">
+                        <h2 style="text-align:center; color:#cdd6f4; border-bottom: 2px solid #cdd6f4; padding-bottom: 10px;">Gauss-Jacobi</h2>
+                        <div id="res-jacobi" class="result-box"></div>
+                    </div>
+
+                    <div class="result-column">
+                        <h2 style="text-align:center; color:#cdd6f4; border-bottom: 2px solid #cdd6f4; padding-bottom: 10px;">Gauss-Seidel</h2>
+                        <div id="res-seidel" class="result-box"></div>
+                    </div>
+                </div>
+                
+
             </div>
         </main>
     </div>

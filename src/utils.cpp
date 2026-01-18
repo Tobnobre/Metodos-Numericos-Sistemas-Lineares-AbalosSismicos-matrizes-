@@ -10,7 +10,7 @@ bool Utils::verificarDiagonalDominante(int n, const vector<vector<double>>& A) {
         for (int j = 0; j < n; j++) {
             if (i != j) soma_linha += abs(A[i][j]);
         }
-        if (abs(A[i][i]) == 0 || abs(A[i][i]) < soma_linha) return false;
+        if (abs(A[i][i]) == 0 || abs(A[i][i]) <= soma_linha) return false;
     }
     return true;
 }

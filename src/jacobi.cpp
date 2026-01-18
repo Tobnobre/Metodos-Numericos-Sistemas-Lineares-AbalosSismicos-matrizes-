@@ -4,24 +4,22 @@
 
 using namespace std;
 
-// Adicionado parametro 'erro_final' por referência
 pair<vector<double>, int> JacobiSolver::resolver(int n, const vector<vector<double>>& A, const vector<double>& b, double erro_max, double &erro_final) {
     vector<double> x(n);
     
-    // Chute inicial
     for (int i = 0; i < n; i++) {
         if (abs(A[i][i]) > 1e-12) x[i] = b[i] / A[i][i];
         else x[i] = 0.0;
     }
     
     vector<double> x_novo = x;
-    double erro = 10.0; // Erro inicial alto
+    double erro = 10.0;
     int iter = 0;
     int max_iter = 1000;
     
     while (erro > erro_max) {
         if (iter >= max_iter || erro > 1e15 || std::isnan(erro) || std::isinf(erro)) {
-            erro_final = erro; // Salva o erro antes de sair
+            erro_final = erro;
             return {x, -2}; 
         }
 
@@ -54,6 +52,6 @@ pair<vector<double>, int> JacobiSolver::resolver(int n, const vector<vector<doub
         iter++;
     }
     
-    erro_final = erro; // Salva o erro final alcançado
+    erro_final = erro;
     return {x, iter};
 }
